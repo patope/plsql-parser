@@ -830,9 +830,14 @@ case_else_part
 // $>
 
 atom
-    :    constant
-    |    general_element
-    |    LEFT_PAREN ((select_key)=> subquery|expression_or_vector) RIGHT_PAREN
+    :   constant
+    |   general_element (cursor_attribute)? 
+    |   sql_key cursor_attribute 
+    |   LEFT_PAREN ((select_key)=> subquery|expression_or_vector) RIGHT_PAREN
+    ;
+
+cursor_attribute
+    :   (percent_notfound_key|percent_found_key|percent_isopen_key|percent_rowcount_key)
     ;
 
 expression_or_vector

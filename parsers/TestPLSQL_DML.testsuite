@@ -492,3 +492,10 @@ lock_table_statement:
 <<lock table a.employees@teste subpartition (1)
    in row share mode 
    wait 10>> OK
+
+expression:
+"c1%notfound" OK
+":c1%found" OK
+"sql%rowcount" OK
+"c1%rowcount" OK
+"c2%isopen" OK

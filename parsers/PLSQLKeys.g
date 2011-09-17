@@ -2409,6 +2409,10 @@ select_key
     :    SQL92_RESERVED_SELECT
     ;
 
+sql_key
+    :    SQL92_RESERVED_SQL
+    ;
+
 when_key
     :    SQL92_RESERVED_WHEN
     ;
