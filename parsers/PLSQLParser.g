@@ -180,7 +180,7 @@ backtrack=true;
 
     |    create_trigger
     |    create_type
-    |    drop_function
+    |    (drop_key function_key)=> drop_function
     |    drop_package
     |    drop_procedure
     |    drop_sequence
@@ -193,9 +193,9 @@ backtrack=true;
 // $<Function DDLs
 
 drop_function
-    :    drop_key function_key function_name
+    :   drop_key function_key function_name (LEFT_PAREN datatype (COMMA datatype)* RIGHT_PAREN)?
         SEMICOLON
-        -> ^(DROP_FUNCTION[$drop_key.start] function_name)
+        -> ^(DROP_FUNCTION[$drop_key.start] function_name datatype*)
     ;
 
 alter_function
