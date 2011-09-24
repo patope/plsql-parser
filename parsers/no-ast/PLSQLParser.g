@@ -73,7 +73,7 @@ backtrack=true;
     |    create_procedure_body
     |    create_package
 
-//    |    create_index //TODO
+    |    create_index
 //    |    create_table //TODO
 //    |    create_view //TODO
 //    |    create_directory //TODO
@@ -89,9 +89,46 @@ backtrack=true;
     |    drop_sequence
     |    drop_trigger
     |    drop_type
+    |    drop_index
     ;
 
 // $<DDL -> SQL Statements for Stored PL/SQL Units
+
+// $<Index DDLs
+
+drop_index
+    :   drop_key index_key index_name
+        SEMICOLON
+    ;
+
+create_index
+    :    create_key (unique_key|bitmap_key)? index_key index_name on_key
+    (cluster_index_clause|table_index_clause|bitmap_join_index_clause) unusable_key? SEMICOLON;
+
+cluster_index_clause
+    :    cluster_key cluster_name index_attribute*
+    ;
+
+index_attribute
+    :   (sort_key|nosort_key)
+    |   reverse_key
+    |   (visible_key|novisible_key)
+    |   tablespace_key (default_key|tablespace_name)
+    |   online_key
+    ;
+
+table_index_clause
+    :    table_name alias? LEFT_PAREN table_index_expression (COMMA table_index_expression)* RIGHT_PAREN 
+    ;
+
+table_index_expression
+    :     column_name (asc_key|desc_key)?
+    ;
+    
+
+bitmap_join_index_clause
+    :	table_name  LEFT_PAREN RIGHT_PAREN
+    ;
 
 // $<Function DDLs
 

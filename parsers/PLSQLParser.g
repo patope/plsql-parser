@@ -123,6 +123,7 @@ tokens {
     ALTER_SEQUENCE;
     CREATE_SEQUENCE;
     COLUMN;
+    DROP_INDEX;
 }
 
 @header {
@@ -174,17 +175,15 @@ backtrack=true;
     |    alter_trigger
     |    alter_type
     |    alter_table
+    |    (create_key (unique_key|bitmap_key)? index_key)=> create_index
     |    create_function_body
     |    create_procedure_body
     |    create_package
     |    create_sequence
-
-//    |    create_index //TODO
     |    create_table
 //    |    create_view //TODO
 //    |    create_directory //TODO
 //    |    create_materialized_view //TODO
-
     |    create_trigger
     |    create_type
     |    (drop_key function_key)=> drop_function
@@ -194,9 +193,50 @@ backtrack=true;
     |    drop_trigger
     |    drop_type
     |    drop_table
+    |    drop_index
     ;
 
 // $<DDL -> SQL Statements for Stored PL/SQL Units
+
+// $<Index DDLs
+
+drop_index
+    :    drop_key index_key index_name
+        SEMICOLON
+        -> ^(DROP_INDEX[$drop_key.start] index_name)
+    ;
+
+create_index
+    :    create_key (unique_key|bitmap_key)? index_key index_name on_key
+    (cluster_index_clause|table_index_clause|bitmap_join_index_clause) unusable_key? SEMICOLON;
+
+cluster_index_clause
+    :    cluster_key cluster_name index_attribute*
+    ;
+
+index_attribute
+    :   (sort_key|nosort_key)
+    |   reverse_key
+    |   (visible_key|novisible_key)
+    |   tablespace_key (default_key|tablespace_name)
+    |   online_key
+    ;
+
+table_index_clause
+    :    table_name alias? LEFT_PAREN! table_index_expression (COMMA! table_index_expression)* RIGHT_PAREN! index_properties
+    ;
+
+table_index_expression
+    :     column_name (asc_key|desc_key)?
+    ;
+    
+index_properties
+    :
+    ;
+
+bitmap_join_index_clause
+    :	table_name  LEFT_PAREN! RIGHT_PAREN!
+    ;
 
 // $<Table DDLs
 

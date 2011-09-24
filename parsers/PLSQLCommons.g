@@ -71,6 +71,8 @@ tokens {
     XML_COLUMN_NAME;
     TABLE_NAME;
     OBJECT_NAME;
+    CLUSTER_NAME;
+    TABLESPACE_NAME;
 }
 
 // $<Common SQL PL/SQL Clauses/Parts
@@ -151,6 +153,11 @@ routine_name
 package_name
     :    id
         -> ^(PACKAGE_NAME id)
+    ;
+
+tablespace_name
+    :    id
+        -> ^(TABLESPACE_NAME id)
     ;
 
 implementation_type_name
@@ -242,8 +249,13 @@ variable_name
     ;
 
 index_name
+    :    id ((PERIOD id_expression)=> PERIOD id_expression)?
+        -> ^(INDEX_NAME id id_expression*)
+    ;
+
+cluster_name
     :    id
-        -> ^(INDEX_NAME id)
+        -> ^(CLUSTER_NAME id)
     ;
 
 cursor_name

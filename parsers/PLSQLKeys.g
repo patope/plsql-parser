@@ -1418,6 +1418,14 @@ ignore_key
 unique_key
     :    SQL92_RESERVED_UNIQUE
     ;
+    
+unusable_key
+    :    {input.LT(1).getText().equalsIgnoreCase("unusable")}?=> REGULAR_ID
+    ;
+
+bitmap_key
+    :    {input.LT(1).getText().equalsIgnoreCase("bitmap")}?=> REGULAR_ID
+    ;
 
 submultiset_key
     :    {input.LT(1).getText().equalsIgnoreCase("submultiset")}?=> REGULAR_ID -> SUBMULTISET_VK[$REGULAR_ID]
@@ -2356,6 +2364,26 @@ triggers_key
     
 novalidate_key
     :    {input.LT(1).getText().equalsIgnoreCase("novalidate")}? REGULAR_ID
+    ;
+    
+online_key
+    :    {input.LT(1).getText().equalsIgnoreCase("online")}? REGULAR_ID
+    ;
+
+nosort_key
+    :    {input.LT(1).getText().equalsIgnoreCase("nosort")}? REGULAR_ID
+    ;
+
+novisible_key
+    :    {input.LT(1).getText().equalsIgnoreCase("novisible")}? REGULAR_ID
+    ;
+
+visible_key
+    :    {input.LT(1).getText().equalsIgnoreCase("visible")}? REGULAR_ID
+    ;
+
+tablespace_key
+    :    {input.LT(1).getText().equalsIgnoreCase("tablespace")}? REGULAR_ID
     ;
 
 is_key

@@ -1754,3 +1754,20 @@ end;
 
 alter trigger a2_ontology_insert enable;
 >> OK
+
+drop_index:
+"drop index p.ix_e;" OK
+"drop index ix_e;" OK
+
+create_index:
+"create index p.ix_e on p.e (type, edate, tk);" OK
+"create index p.ix_e on p.e (type asc, edate asc, tk asc);" OK
+"create unique index p.ix_e on p.e (type asc, edate desc, tk);" OK
+
+compilation_unit:
+<<
+create index p.ix_e on p.e (type, edate, tk);
+
+drop index p.ix_e;
+>> OK
+

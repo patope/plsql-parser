@@ -87,6 +87,10 @@ package_name
     :    id
     ;
 
+tablespace_name
+    :    id
+    ;
+
 implementation_type_name
     :    id ((PERIOD id_expression)=> PERIOD id_expression)?
     ;
@@ -143,12 +147,20 @@ trigger_name
     :    id ((PERIOD id_expression)=> PERIOD id_expression)?
     ;
 
+table_name
+    :    id ((PERIOD id_expression)=> PERIOD id_expression)?
+    ;
+
 variable_name
     :    COLON? (INTRODUCER char_set_name)?
             id_expression (((PERIOD|COLON) id_expression)=> (PERIOD|COLON) id_expression)?
     ;
 
 index_name
+    :    id ((PERIOD id_expression)=> PERIOD id_expression)?
+    ;
+
+cluster_name
     :    id
     ;
 
