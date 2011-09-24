@@ -282,7 +282,6 @@ tokens {
     COMPATIBILITY_VK;
     OVER_VK;
     LAST_VALUE_VK;
-    CURRENT_VK;
     UNBOUNDED_VK;
     COST_VK;
     CHAR_CS_VK;
@@ -337,6 +336,8 @@ tokens {
     NOCACHE_VK;
     NOMAXVALUE_VK;
     NOMINVALUE_VK;
+    PRESERVE_VK;
+    SORT_VK;
 }
 
 create_key
@@ -2302,6 +2303,10 @@ global_key
     :    {input.LT(1).getText().equalsIgnoreCase("global")}? REGULAR_ID
     ;
 
+temporary_key
+    :    {input.LT(1).getText().equalsIgnoreCase("temporary")}? REGULAR_ID
+    ;
+
 year_key
     :    {input.LT(1).getText().equalsIgnoreCase("year")}?=> REGULAR_ID -> YEAR_VK[$REGULAR_ID]
     ;
@@ -2319,6 +2324,38 @@ hour_key:    {input.LT(1).getText().equalsIgnoreCase("hour")}? REGULAR_ID -> HOU
 
 minute_key
     :    {input.LT(1).getText().equalsIgnoreCase("minute")}? REGULAR_ID -> MINUTE_VK[$REGULAR_ID]
+    ;
+
+whenever_key
+    :    {input.LT(1).getText().equalsIgnoreCase("whenever")}? REGULAR_ID
+    ;
+
+preserve_key
+    :    {input.LT(1).getText().equalsIgnoreCase("preserve")}? REGULAR_ID
+    ;
+
+sort_key
+    :    {input.LT(1).getText().equalsIgnoreCase("sort")}? REGULAR_ID
+    ;
+
+key_key
+    :    {input.LT(1).getText().equalsIgnoreCase("key")}? REGULAR_ID
+    ;
+
+primary_key
+    :    {input.LT(1).getText().equalsIgnoreCase("primary")}? REGULAR_ID
+    ;
+    
+references_key
+    :    {input.LT(1).getText().equalsIgnoreCase("references")}? REGULAR_ID
+    ;
+
+triggers_key
+    :    {input.LT(1).getText().equalsIgnoreCase("triggers")}? REGULAR_ID
+    ;
+    
+novalidate_key
+    :    {input.LT(1).getText().equalsIgnoreCase("novalidate")}? REGULAR_ID
     ;
 
 is_key

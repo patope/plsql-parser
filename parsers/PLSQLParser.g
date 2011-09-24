@@ -48,6 +48,8 @@ tokens {
     DROP_TRIGGER;
     ALTER_TRIGGER;
     CREATE_TRIGGER;
+    DROP_TABLE;
+    CREATE_TABLE;
     LOGIC_EXPR;
     SIMPLE_DML;
     FOR_EACH_ROW;
@@ -120,6 +122,7 @@ tokens {
     DROP_SEQUENCE;
     ALTER_SEQUENCE;
     CREATE_SEQUENCE;
+    COLUMN;
 }
 
 @header {
@@ -170,13 +173,14 @@ backtrack=true;
     |    alter_sequence
     |    alter_trigger
     |    alter_type
+    |    alter_table
     |    create_function_body
     |    create_procedure_body
     |    create_package
     |    create_sequence
 
 //    |    create_index //TODO
-//    |    create_table //TODO
+    |    create_table
 //    |    create_view //TODO
 //    |    create_directory //TODO
 //    |    create_materialized_view //TODO
@@ -189,9 +193,89 @@ backtrack=true;
     |    drop_sequence
     |    drop_trigger
     |    drop_type
+    |    drop_table
     ;
 
 // $<DDL -> SQL Statements for Stored PL/SQL Units
+
+// $<Table DDLs
+
+drop_table
+    :    drop_key table_key table_name
+        SEMICOLON
+        -> ^(DROP_TABLE[$drop_key.start] table_name)
+    ;
+
+alter_table
+    :    alter_key table_key table_name column_clauses (enable_disable_clause|(enable_key|disable_key)(table_key lock_key|all_key triggers_key))* SEMICOLON
+    ;
+
+enable_disable_clause
+    : (enable_key|disable_key) (validate_key|novalidate_key)? 
+    ;
+
+column_clauses
+    : add_column_clause
+//    |modify_column_clause
+//    |drop_column_clause
+    ;
+
+add_column_clause
+    : add_key RIGHT_PAREN table_column (COMMA table_column)* LEFT_PAREN
+    | add_key table_column
+    ;
+
+
+modify_column_clause
+    : modify_key
+    ;
+
+drop_column_clause
+    : drop_key
+    ;
+
+create_table
+    :    create_key (global_key temporary_key)? table_key table_name
+        ( LEFT_PAREN table_definition RIGHT_PAREN )?
+        (on_key commit_key (delete_key|preserve_key) rows_key)?
+//        table_physical_properties?
+//        table_properties?
+        SEMICOLON
+        -> ^(CREATE_TABLE[$create_key.start] table_name table_definition)
+    ;
+
+table_definition
+    :
+    table_elements (COMMA table_elements)*    
+    ;
+    
+table_elements
+    :    table_column 
+    |    table_constraint
+    ;
+
+table_column
+    :    column_name^ type_spec default_value_part? inline_constraint* 
+    
+    ;
+
+inline_constraint
+    :(constraint_key constraint_name)?
+      (not_key? null_key|unique_key|primary_key key_key|references_clause|check_key LEFT_PAREN condition RIGHT_PAREN) 
+    ;
+
+//constraint_state
+//    :
+//    ;
+    
+references_clause
+    :    references_key object_name (LEFT_PAREN column_name RIGHT_PAREN)? (on_key delete_key (cascade_key|set_key null_key))?
+    ;
+
+table_constraint
+    : (constraint_key constraint_name)?
+    primary_key key_key LEFT_PAREN column_name (COMMA! column_name)* RIGHT_PAREN
+    ;
 
 // $<Function DDLs
 
@@ -934,8 +1018,8 @@ parameter
     ;
 
 default_value_part
-    :    (ASSIGN_OP|default_key) expression
-        -> ^(DEFAULT_VALUE ^(EXPR expression))
+    :    (ASSIGN_OP|default_key) concatenation_wrapper
+        -> ^(DEFAULT_VALUE concatenation_wrapper)
     ;
 
 // $>
@@ -1223,7 +1307,7 @@ function_call
 
 body
     :    begin_key
-        seq_of_statements
+        seq_of_statements?
         exception_clause?
         end_key label_name?
         -> ^(BODY[$begin_key.start] label_name? seq_of_statements exception_clause?) 

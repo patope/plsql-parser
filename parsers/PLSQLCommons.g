@@ -69,6 +69,8 @@ tokens {
     ANY_ELEMENT;
     COST_CLASS_NAME;
     XML_COLUMN_NAME;
+    TABLE_NAME;
+    OBJECT_NAME;
 }
 
 // $<Common SQL PL/SQL Clauses/Parts
@@ -219,6 +221,16 @@ procedure_name
 trigger_name
     :    id ((PERIOD id_expression)=> PERIOD id_expression)?
         ->^(TRIGGER_NAME id id_expression*)
+    ;
+
+table_name
+    :    id ((PERIOD id_expression)=> PERIOD id_expression)?
+        -> ^(TABLE_NAME id id_expression*)
+    ;
+
+object_name
+    :    id ((PERIOD id_expression)=> PERIOD id_expression)?
+        -> ^(OBJECT_NAME id id_expression*)
     ;
 
 variable_name

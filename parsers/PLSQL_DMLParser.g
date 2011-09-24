@@ -99,6 +99,8 @@ tokens {
     PIVOT_ALIAS;
     DATETIME_OP;
     XML_ELEMENT;
+    IS_NOT_EXISTS;
+    IS_EXISTS;
 }
 
 @members{
@@ -829,7 +831,6 @@ equality_expression
     )*
     ;
 
-
 multiset_expression
     :    (relational_expression -> relational_expression)
     (    multiset_type of_key? concatenation
@@ -1053,8 +1054,9 @@ vector_expr
     ;
 
 quantified_expression
-    :    ( some_key^ | exists_key^ | all_key^ | any_key^ ) 
+    :    ( some_key^ | all_key^ | any_key^ ) 
         LEFT_PAREN! expression_wrapper RIGHT_PAREN!
+        | exists_key^ atom 
     ;
 
 standard_function
