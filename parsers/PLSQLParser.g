@@ -1189,6 +1189,8 @@ backtrack=true;
     |    raise_statement
     |    return_statement
     |    case_statement[true]
+    |    open_for_statement
+    |    open_statement
     |    sql_statement
     |    function_call
     |    body
@@ -1342,7 +1344,8 @@ options{
 backtrack=true;
 }    :    execute_immediate
     |    data_manipulation_language_statements
-    |    cursor_manipulation_statements
+    |    close_statement
+    |    fetch_statement
     |    transaction_control_statements
     ;
 
@@ -1377,13 +1380,6 @@ data_manipulation_language_statements
 // $>
 
 // $<Cursor Manipulation SQL PL/SQL Statements
-
-cursor_manipulation_statements
-    :    close_statement
-    |    open_statement
-    |    fetch_statement
-    |    open_for_statement
-    ;
 
 close_statement
     :     close_key^ variable_name 

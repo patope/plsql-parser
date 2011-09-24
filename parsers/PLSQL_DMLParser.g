@@ -276,16 +276,20 @@ table_ref_aux
         ({isTableAlias()}? alias)?
         -> ^(TABLE_REF_ELEMENT alias? dml_table_expression_clause only_key? pivot_clause? unpivot_clause? flashback_query_clause*)
     ;
+    
+join_table_ref
+    : (LEFT_PAREN! ((select_key|with_key)=>select_statement|table_ref) RIGHT_PAREN! alias?|table_ref)
+    ;
 
 join_clause
     :    query_partition_clause?
         (cross_key|natural_key)? (inner_key|outer_join_type)? join_key
-        table_ref_aux
+        join_table_ref
         query_partition_clause?
     (    join_on_part
     |    join_using_part
     )?
-        -> ^(JOIN_DEF[$join_key.start] cross_key? natural_key? inner_key? outer_join_type? table_ref_aux query_partition_clause* join_on_part? join_using_part?) 
+        -> ^(JOIN_DEF[$join_key.start] cross_key? natural_key? inner_key? outer_join_type? join_table_ref query_partition_clause* join_on_part? join_using_part?) 
     ;
 
 join_on_part
@@ -1107,7 +1111,7 @@ standard_function
             RIGHT_PAREN!
     |    trim_key^
             LEFT_PAREN! 
-                ((leading_key|trailing_key|both_key)? concatenation_wrapper from_key!)? concatenation_wrapper 
+                /*((leading_key|trailing_key|both_key)? concatenation_wrapper from_key!)?*/ concatenation_wrapper 
             RIGHT_PAREN!
     |    xmlagg_key^
             LEFT_PAREN! 
