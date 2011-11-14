@@ -175,7 +175,7 @@ backtrack=true;
     |    alter_trigger
     |    alter_type
     |    alter_table
-    |    (create_key (unique_key|bitmap_key)? index_key)=> create_index
+    |    create_index
     |    create_function_body
     |    create_procedure_body
     |    create_package
@@ -247,7 +247,7 @@ drop_table
     ;
 
 alter_table
-    :    alter_key table_key table_name column_clauses (enable_disable_clause|(enable_key|disable_key)(table_key lock_key|all_key triggers_key))* SEMICOLON
+    :    alter_key table_key table_name (column_clauses|constraint_clauses) (enable_disable_clause|(enable_key|disable_key)(table_key lock_key|all_key triggers_key))* SEMICOLON
     ;
 
 enable_disable_clause
@@ -272,6 +272,17 @@ modify_column_clause
 
 drop_column_clause
     : drop_key
+    ;
+
+constraint_clauses
+    : add_constraint_clause
+//    |modify_column_clause
+//    |rename_column_clause
+//    |drop_constraint_clause
+    ;
+
+add_constraint_clause
+    :   add_key inline_constraint constraint_state? 
     ;
 
 create_table
@@ -301,12 +312,31 @@ table_column
 
 inline_constraint
     :(constraint_key constraint_name)?
-      (not_key? null_key|unique_key|primary_key key_key|references_clause|check_key LEFT_PAREN condition RIGHT_PAREN) 
+      (not_key? null_key|unique_key column_list?|primary_key key_key column_list?|references_clause|check_key LEFT_PAREN condition RIGHT_PAREN) 
+    ;
+    
+column_list
+    :
+    LEFT_PAREN column_name (COMMA column_name)* RIGHT_PAREN
     ;
 
-//constraint_state
-//    :
-//    ;
+constraint_state
+    : not_key? not_deferrable
+    | initially_key (immediate_key|deferred_key)
+    | (rely_key|norely_key)
+    | using_index_clause
+    | (enable_key|disable_key)
+    | (validate_key|novalidate_key)
+    | exceptions_clause
+    ;
+    
+using_index_clause
+    :    using_key index_key index_name
+    ;
+    
+exceptions_clause
+    :
+    ;
     
 references_clause
     :    references_key object_name (LEFT_PAREN column_name RIGHT_PAREN)? (on_key delete_key (cascade_key|set_key null_key))?

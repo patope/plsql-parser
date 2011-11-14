@@ -68,7 +68,7 @@ backtrack=true;
     |    alter_sequence
     |    alter_trigger
     |    alter_type
-
+    |    alter_table
     |    create_function_body
     |    create_procedure_body
     |    create_package
@@ -129,6 +129,119 @@ table_index_expression
 bitmap_join_index_clause
     :	table_name  LEFT_PAREN RIGHT_PAREN
     ;
+// $<Table DDLs
+
+drop_table
+    :    drop_key table_key table_name
+        SEMICOLON
+    ;
+
+alter_table
+    :    alter_key table_key table_name (constraint_clauses|column_clauses) SEMICOLON
+//    :    alter_key table_key table_name (column_clauses|constraint_clauses) (enable_disable_clause|(enable_key|disable_key)(table_key lock_key|all_key triggers_key))* SEMICOLON
+    ;
+
+enable_disable_clause
+    : (enable_key|disable_key) (validate_key|novalidate_key)? 
+    ;
+
+column_clauses
+    : add_column_clause
+//    |modify_column_clause
+//    |drop_column_clause
+    ;
+
+constraint_clauses
+    :    add_constraint
+    |    modify_constraint
+    |    rename_constraint
+    |    drop_constraint
+    ;
+
+add_constraint
+    :   add_key (out_of_line_constraint+|out_of_line_ref_constraint)
+    ;
+
+out_of_line_constraint
+    :   (constraint_key constraint_name)? 
+        (  unique_key LEFT_PAREN column_name (COMMA column_name)* RIGHT_PAREN
+          | primary_key key_key LEFT_PAREN column_name (COMMA column_name)* RIGHT_PAREN
+          | foreign_key key_key LEFT_PAREN column_name (COMMA column_name)* RIGHT_PAREN
+          | check_key LEFT_PAREN column_name (COMMA column_name)* RIGHT_PAREN
+        )
+    ;
+
+out_of_line_ref_constraint
+    :
+    ;
+
+modify_constraint
+    :   modify_key
+    ;
+
+rename_constraint
+    :   rename_key
+    ;
+
+drop_constraint
+    :   drop_key
+    ;
+
+add_column_clause
+    : add_key RIGHT_PAREN table_column (COMMA table_column)* LEFT_PAREN
+    | add_key table_column
+    ;
+
+modify_column_clause
+    : modify_key
+    ;
+
+drop_column_clause
+    : drop_key
+    ;
+
+create_table
+    :    create_key (global_key temporary_key)? table_key table_name
+        ( LEFT_PAREN table_definition RIGHT_PAREN )?
+        (on_key commit_key (delete_key|preserve_key) rows_key)?
+//        table_physical_properties?
+//        table_properties?
+        SEMICOLON
+    ;
+
+table_definition
+    :
+    table_elements (COMMA table_elements)*    
+    ;
+    
+table_elements
+    :    table_column 
+    |    table_constraint
+    ;
+
+table_column
+    :    column_name type_spec default_value_part? inline_constraint* 
+    
+    ;
+
+inline_constraint
+    :(constraint_key constraint_name)?
+      (not_key? null_key|unique_key|primary_key key_key|references_clause|check_key LEFT_PAREN condition RIGHT_PAREN) 
+    ;
+
+//constraint_state
+//    :
+//    ;
+    
+references_clause
+    :    references_key object_name (LEFT_PAREN column_name RIGHT_PAREN)? (on_key delete_key (cascade_key|set_key null_key))?
+    ;
+
+table_constraint
+    : (constraint_key constraint_name)?
+    primary_key key_key LEFT_PAREN column_name (COMMA column_name)* RIGHT_PAREN
+    ;
+
 
 // $<Function DDLs
 
@@ -736,7 +849,7 @@ parameter
     ;
 
 default_value_part
-    :    (ASSIGN_OP|default_key) expression
+    :    (ASSIGN_OP|default_key) concatenation_wrapper
     ;
 
 // $>

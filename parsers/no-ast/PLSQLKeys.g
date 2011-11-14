@@ -96,6 +96,9 @@ function_key
     :    {input.LT(1).getText().equalsIgnoreCase("function")}?=> REGULAR_ID
     ;
 
+foreign_key
+    :    SQL92_RESERVED_FOREIGN
+    ;
 pragma_key
     :    {input.LT(1).getText().equalsIgnoreCase("pragma")}? REGULAR_ID
     ;
@@ -1986,6 +1989,10 @@ module_key
 
 global_key
     :    {input.LT(1).getText().equalsIgnoreCase("global")}? REGULAR_ID
+    ;
+
+temporary_key
+    :    {input.LT(1).getText().equalsIgnoreCase("temporary")}? REGULAR_ID
     ;
 
 year_key

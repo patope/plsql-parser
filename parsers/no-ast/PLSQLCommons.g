@@ -151,6 +151,10 @@ table_name
     :    id ((PERIOD id_expression)=> PERIOD id_expression)?
     ;
 
+object_name
+    :    id ((PERIOD id_expression)=> PERIOD id_expression)?
+    ;
+
 variable_name
     :    COLON? (INTRODUCER char_set_name)?
             id_expression (((PERIOD|COLON) id_expression)=> (PERIOD|COLON) id_expression)?

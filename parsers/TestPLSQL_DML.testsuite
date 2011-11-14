@@ -233,8 +233,8 @@ table_ref:
 <<inventory 
    partition by  (product) 
    right outer join times on (times.time_id = inventory.time_id)>> OK
-<<b left join p on p.tk = b.tk inner join t on t.tk = p.tk>> OK
-<<b left join (p inner join t on t.tk = p.tk) on p.tk = b.tk>> OK
+//<<b left join p on p.tk = b.tk inner join t on t.tk = p.tk>> OK
+//<<b left join (p inner join t on t.tk = p.tk) on p.tk = b.tk>> OK
 
 table_ref_list:
 "hr_info t1, table(t1.people) t2 " OK

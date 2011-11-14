@@ -1771,3 +1771,18 @@ create index p.ix_e on p.e (type, edate, tk);
 drop index p.ix_e;
 >> OK
 
+alter_table:
+"alter table e.keys add tk varchar2(10);" OK
+"alter table e.keys add tk number(11) default 0;" OK
+"alter table e.keys add tk number(11) not null;" OK
+"alter table e.keys add tk number(11) default 0 not null;" OK
+"alter table e.keys add tk number(11) default 0 constraint not_null not null;" OK
+"alter table e.keys add primary key (tke, tke2);" OK
+"alter table e.keys add constraint pk_ekeys primary key (tke);" OK
+
+compilation_unit:
+<<
+alter table e.keys add tk number(11) default 0 not null;
+alter table e.keys add constraint pk_ekeys primary key (tke);
+>> OK
+

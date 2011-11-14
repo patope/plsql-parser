@@ -718,6 +718,26 @@ constraints_key
     :    {input.LT(1).getText().equalsIgnoreCase("constraints")}?=> REGULAR_ID
     ;
 
+not_deferrable
+    :    {input.LT(1).getText().equalsIgnoreCase("deferrable")}?=> REGULAR_ID
+    ;
+
+initially_key
+    :    {input.LT(1).getText().equalsIgnoreCase("initially")}?=> REGULAR_ID
+    ;
+    
+rely_key
+    :    {input.LT(1).getText().equalsIgnoreCase("rely")}?=> REGULAR_ID
+    ;
+
+norely_key
+    :    {input.LT(1).getText().equalsIgnoreCase("norely")}?=> REGULAR_ID
+    ;
+
+foreign_key
+    :    {input.LT(1).getText().equalsIgnoreCase("foreign")}?=> REGULAR_ID
+    ;
+
 call_key
     :    {input.LT(1).getText().equalsIgnoreCase("call")}?=> REGULAR_ID -> CALL_VK[$REGULAR_ID]
     ;
