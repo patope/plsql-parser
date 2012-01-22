@@ -870,8 +870,13 @@ backtrack=true;
     :    (table_element outer_join_sign) => table_element outer_join_sign
     |    bind_variable
     |    constant
-    |    general_element
+    |    general_element (cursor_attribute)? 
+    |    sql_key cursor_attribute 
     |    LEFT_PAREN ((select_key)=> subquery|expression_or_vector) RIGHT_PAREN
+    ;
+
+cursor_attribute
+    :    (percent_notfound_key|percent_found_key|percent_isopen_key|percent_rowcount_key)
     ;
 
 expression_or_vector

@@ -1060,6 +1060,7 @@ case_else_part
 // $>
 
 atom
+@init   { int mode = 0; }
 options
 {
 backtrack=true;
@@ -1067,8 +1068,16 @@ backtrack=true;
     :    (table_element outer_join_sign) => table_element outer_join_sign
     |    bind_variable
     |    constant
-    |    general_element
+    |    (general_element (cursor_attribute {mode=1;})? 
+         -> {mode == 1}? ^(cursor_attribute general_element)
+         -> general_element)
+    |    sql_key cursor_attribute 
+         -> ^(cursor_attribute sql_key)
     |    LEFT_PAREN! ((select_key)=> subquery|expression_or_vector) RIGHT_PAREN!
+    ;
+
+cursor_attribute
+    :   (percent_notfound_key|percent_found_key|percent_isopen_key|percent_rowcount_key)
     ;
 
 expression_or_vector
